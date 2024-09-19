@@ -25,10 +25,7 @@ public class StackWithTwoQueues<E> {
      * without removing it from the stack
      */
     public boolean empty() {
-        if ( queue1.isEmpty()){
-            return true;
-        }
-        return false;
+        return queue1.isEmpty();
     }
 
     /**
@@ -55,9 +52,7 @@ public class StackWithTwoQueues<E> {
             throw new EmptyStackException();
         }
         else{
-            E item = queue1.peek();
-            queue1.remove();
-            return item;
+            return queue1.remove();
         }
     }
 
@@ -67,7 +62,15 @@ public class StackWithTwoQueues<E> {
      * @param item the item to add
      */
     public void push(E item) {
-        queue1.add(item);
+        // complexite O(n)
+        // add
+        queue2.add(item); // push
+        while (!queue1.isEmpty()){
+            queue2.add(queue1.remove());
+        }
+        while(!queue2.isEmpty()){
+            queue1.add(queue2.remove());
+        }
     }
 
 }
