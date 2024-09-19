@@ -27,7 +27,7 @@ public class StackTest {
             stack.push(3);
             assertFalse(stack.empty());
             assertEquals(3, (int) stack.pop());
-            assertEquals(2, (int) stack.pop());
+            assertEquals(2, (int) stack.pop()); // probleme ici
             assertEquals(1, (int) stack.pop());
             assertTrue(stack.empty());
 

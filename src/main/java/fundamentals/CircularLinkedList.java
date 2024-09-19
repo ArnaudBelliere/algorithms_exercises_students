@@ -2,6 +2,7 @@ package fundamentals;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 /**
@@ -39,6 +40,7 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
 
     public CircularLinkedList() {
         // TODO initialize instance variables
+        LinkedList<Integer> CircleList = new LinkedList<>();
     }
 
     public boolean isEmpty() {

@@ -60,29 +60,47 @@ class LinkedStack<E> implements Stack<E> {
             this.item = element;
             this.next = next;
         }
+
+        public Node() {
+
+        }
     }
 
     @Override
     public boolean empty() {
         // TODO Implement empty method
-         return false;
+        if ( size == 0){
+            return true;
+        }
+        return false;
     }
 
     @Override
     public E peek() throws EmptyStackException {
         // TODO Implement peek method
-         return null;
+        if (size ==0){
+            throw new EmptyStackException();
+        }
+        return top.item ;
     }
 
     @Override
     public E pop() throws EmptyStackException {
         // TODO Implement pop method
-         return null;
+        if (size ==0){
+            throw new EmptyStackException();
+        }
+        E ret = top.item;
+        size --;
+        top = top.next;
+        return ret;
     }
 
     @Override
     public void push(E item) {
         // TODO Implement push method
+        top = new Node<E>(item,top);
+        size ++;
     }
 }
 
@@ -106,24 +124,42 @@ class ArrayStack<E> implements Stack<E> {
     @Override
     public boolean empty() {
         // TODO Implement empty method
-         return false;
+        return (size == 0);
     }
 
     @Override
     public E peek() throws EmptyStackException {
         // TODO Implement peek method
-         return null;
+        if (size ==0){
+            throw new EmptyStackException();
+        }
+        return array[size-1];
     }
 
     @Override
     public E pop() throws EmptyStackException {
         // TODO Implement pop method
-         return null;
+        if ( size == 0){
+            throw new EmptyStackException();
+        }
+        E item = peek();
+        size --;
+        return item;
     }
 
     @Override
     public void push(E item) {
         // TODO Implement push method
+        size ++;
+        array[size -1] = item;
+        if (size == array.length){
+            E[] newArray = (E[]) new Object[array.length * 2];
+            for (int i = 0; i < array.length; i++) {
+                newArray[i] = array[i];
+            }
+            array = newArray;
+        }
+
     }
 }
 
