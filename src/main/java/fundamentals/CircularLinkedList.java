@@ -40,17 +40,19 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
 
     public CircularLinkedList() {
         // TODO initialize instance variables
-        LinkedList<Integer> CircleList = new LinkedList<>();
+        last = new Node();
+        last.next = last;
+        int n =1;
     }
 
     public boolean isEmpty() {
         // TODO
-         return false;
+         return n==0;
     }
 
     public int size() {
         // TODO
-         return -1;
+         return n;
     }
 
     private long nOp() {
@@ -65,6 +67,15 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
      */
     public void enqueue(Item item) {
         // TODO
+        // last is defined and linked to the first node
+        Node nouv = new Node();
+        nouv.item = item;
+        // create a new node whose next is last.next
+        nouv.next = last.next;
+        // put node as last.next
+        last.next = nouv;
+        last = nouv;
+        n ++;
 
     }
 
@@ -74,7 +85,19 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
      * Returns the element that was removed from the list.
      */
     public Item remove(int index) {
-         return null;
+        // if last is at pos n-1 , then node first is node n-1+1 so (n-1)%n
+        int i = -1;
+        Node curr = last;
+        if ( index<0 || index > n){throw new IndexOutOfBoundsException();}
+        while( i != index){
+            if( index == 0 ){break;}
+            curr = curr.next;
+            i++;
+        }
+        Item item = curr.next.item;
+        curr.next = curr.next.next; // (node i-1).next maintenant link a node i-1+2. plus de ref a node i;
+        n --;
+        return item;
     }
 
 
@@ -98,16 +121,37 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
     private class ListIterator implements Iterator<Item> {
 
         // TODO You probably need a constructor here and some instance variables
+        long n0p ;
+        private Node currentNode;
+
+
+        private ListIterator(){
+            n0p = nOp();
+            currentNode = last.next.next ;
+        }
 
 
         @Override
         public boolean hasNext() {
-             return false;
+            // has next if the currentNode is not the last node
+            if ( currentNode != last.next){
+                return true;
+            }
+            return false;
         }
 
         @Override
         public Item next() {
-             return null;
+             if (n0p != n0p){
+                 throw new ConcurrentModificationException();
+             }
+             if ( !hasNext() ){
+                 throw new NoSuchElementException();
+             }
+             // take the current item then goes to the next node
+             Item item = currentNode.item;
+             currentNode = currentNode.next;
+             return item;
         }
 
     }
