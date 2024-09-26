@@ -88,7 +88,7 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
         // if last is at pos n-1 , then node first is node n-1+1 so (n-1)%n
         int i = -1;
         Node curr = last;
-        if ( index<0 || index > n){throw new IndexOutOfBoundsException();}
+        if ( index<0 || index >= n){throw new IndexOutOfBoundsException();}
         while( i != index){
             if( index == 0 ){break;}
             curr = curr.next;
