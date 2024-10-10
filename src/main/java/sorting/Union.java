@@ -56,8 +56,75 @@ public class Union {
      */
     public static Interval[] union(Interval[] intervals) {
         // TODO
-         return new Interval[]{};
+        // goal is to merge overlapping intervals
+        int nb = intervals.length;
+        // overlap if the end of an interval is between the start and end of another interval
+        // can try to sort the intervals by their start number.
+        /*System.out.println("Intervals : ");
+        for (int i =0 ; i< intervals.length;i++){
+            System.out.println(intervals[i].toString());
+        }*/
+        Interval[] sorted = sort(intervals);
+        /*System.out.println("Sorted Intervals : ");
+        for (int i =0 ; i< sorted.length;i++){
+            System.out.println(sorted[i].toString());
+        }*/
+        // intervals are now sorted, now can check the number of overlap between intervals 1 and others
+        int maxi = sorted[0].max;
+        for(int i=0;i<nb-1;i++){
+            int j = i +1;
+            int count = 0; // count of overlap
+            while(j< nb && maxi >= sorted[j].min){
+                count ++;
+                j++;
+            }
+            if (count > 0){
+                Interval[] iter = new Interval[nb-count];
+                // copy les intervals avant i , puis merge les intervals i à i+count , puis recopy la suite
+                for(int cpy = 0;cpy<i;cpy++){
+                    iter[cpy] = sorted[cpy];
+                }
+                iter[i] = new Interval(sorted[i].min,sorted[i+count].max);
+                maxi = sorted[i+count].max; // update the max
+                for(int cpy = i+1; cpy < nb-count ; cpy++){
+                    iter[cpy] = sorted[cpy+count];
+                }
+                nb -= count;
+                i -=1;
+                sorted = iter;
+            }
+            else if ( count == 0 && i<nb-2){
+                maxi = sorted[i+1].max;
+            }
+        }
 
+        return sorted;
+
+    }
+    public static Interval[] sort(Interval[] intervals){
+        // bubble sort
+        for(int i =0;i< intervals.length -1;i++){
+            for (int j =0; j < intervals.length -1; j++){
+                if(intervals[j].compareTo(intervals[j+1]) ==1){
+                    intervals = swap(intervals,j);
+                }
+            }
+        }
+        return intervals;
+    }
+    public static Interval[] swap(Interval[] intervals , int index){
+        Interval[] ret = new Interval[intervals.length];
+        for (int i =0 ; i< intervals.length;i++){
+            if ( i != index){
+                ret[i] = intervals[i];
+            }
+            else{
+                ret[i] = intervals[i+1];
+                ret[i+1] = intervals[i];
+                i++;
+            }
+        }
+        return ret;
     }
 
 }
