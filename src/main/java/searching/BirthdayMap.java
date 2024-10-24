@@ -26,8 +26,10 @@ import java.util.TreeMap;
 class BirthdayMap {
     // Hint: feel free to use existing java classes from Java such as java.util.TreeMap
 
+    TreeMap<String, List<Person>> map;
     BirthdayMap() {
         // TODO
+        this.map = new TreeMap<>();
     }
 
     /**
@@ -39,6 +41,7 @@ class BirthdayMap {
      */
     void addPerson(Person person) {
         // TODO
+        // find place
     }
 
     /**

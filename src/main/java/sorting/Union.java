@@ -1,6 +1,8 @@
 package sorting;
 
 
+import java.util.ArrayList;
+
 /**
  * Author Pierre Schaus
  *
@@ -57,48 +59,24 @@ public class Union {
     public static Interval[] union(Interval[] intervals) {
         // TODO
         // goal is to merge overlapping intervals
-        int nb = intervals.length;
         // overlap if the end of an interval is between the start and end of another interval
         // can try to sort the intervals by their start number.
-        /*System.out.println("Intervals : ");
-        for (int i =0 ; i< intervals.length;i++){
-            System.out.println(intervals[i].toString());
-        }*/
         Interval[] sorted = sort(intervals);
-        /*System.out.println("Sorted Intervals : ");
-        for (int i =0 ; i< sorted.length;i++){
-            System.out.println(sorted[i].toString());
-        }*/
         // intervals are now sorted, now can check the number of overlap between intervals 1 and others
-        int maxi = sorted[0].max;
-        for(int i=0;i<nb-1;i++){
-            int j = i +1;
-            int count = 0; // count of overlap
-            while(j< nb && maxi >= sorted[j].min){
-                count ++;
-                j++;
-            }
-            if (count > 0){
-                Interval[] iter = new Interval[nb-count];
-                // copy les intervals avant i , puis merge les intervals i à i+count , puis recopy la suite
-                for(int cpy = 0;cpy<i;cpy++){
-                    iter[cpy] = sorted[cpy];
-                }
-                iter[i] = new Interval(sorted[i].min,sorted[i+count].max);
-                maxi = sorted[i+count].max; // update the max
-                for(int cpy = i+1; cpy < nb-count ; cpy++){
-                    iter[cpy] = sorted[cpy+count];
-                }
-                nb -= count;
-                i -=1;
-                sorted = iter;
-            }
-            else if ( count == 0 && i<nb-2){
-                maxi = sorted[i+1].max;
+        int min = sorted[0].min;
+        int max = sorted[0].max;
+        ArrayList<Interval> res = new ArrayList<>();
+        for (int i = 1; i < sorted.length; i++) {
+            if (sorted[i].min > max) {
+                res.add(new Interval(min, max));
+                min = sorted[i].min;
+                max = sorted[i].max;
+            } else {
+                max = Math.max(max, sorted[i].max);
             }
         }
-
-        return sorted;
+        res.add(new Interval(min, max));
+        return res.toArray(new Interval[0]);
 
     }
     public static Interval[] sort(Interval[] intervals){

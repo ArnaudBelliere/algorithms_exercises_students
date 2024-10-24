@@ -34,7 +34,23 @@ public class BinarySearchTree {
      * @param value the value we want to ceil
      */
     public static Integer ceil(BSTNode<Integer> root, int value) {
-         return null;
+        return recursiveCeil(root,value,null);
+    }
+
+    public static Integer recursiveCeil(BSTNode<Integer> root , int value , Integer ret){
+        if(root == null){
+            return ret;
+        }
+        if ( root.getKey() == value){
+            return root.getKey();
+        }
+        else if( root.getKey() > value){
+            ret = root.getKey();
+            return recursiveCeil(root.getLeft(),value,ret);
+        }
+        else{
+            return recursiveCeil(root.getRight(),value,ret);
+        }
     }
 
 
