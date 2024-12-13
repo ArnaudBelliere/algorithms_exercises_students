@@ -75,7 +75,30 @@ public class Aggregate {
      * There is a tie between 2 and 5, but 2 is smaller.
      */
     public static int mode(int[][] array, int from, int to, int column) {
-         return -1;
+        /// prendre l'array et créer un sous array de from a to ,  puis sort l'array.
+        int[] subArray = new int[to - from + 1];
+        for (int i = from ; i < to ; i++){
+            subArray[i] = array[i][column];
+        }
+        Arrays.stream(subArray).sorted();
+        int maxCount = 0;
+        int maxOcc = subArray[0];
+        int prev = -1;
+        int count = 0;
+        for (int i : subArray){
+            if ( i == prev){
+                count ++;
+                if ( count > maxCount){
+                    maxCount = count;
+                    maxOcc = i;
+                }
+            }
+            else {
+                count = 1;
+                prev = i;
+            }
+        }
+        return maxOcc;
     }
 
     /**
@@ -93,7 +116,26 @@ public class Aggregate {
      * Example: See above and see unit tests.
      */
     public static int[][] aggregate(int[][] input, int column) {
-         return null;
+        // group rows by their value of intput row,col .
+        int n = input.length;
+        int count = 0;
+        int [][]groups = new int[n][input[0].length];
+        int a = 0;
+        while ( count != n){
+            int occ = mode(input , 0, n-1,column);
+            for(int i = 0; i < n ; i ++){
+                if ( input[i][column] == occ){
+                    for(int j = 0; j < input[0].length ; j ++){
+                        groups[a][j] = (int) (double) input[i][column];
+                    }
+                    input[i][column] = 100047;
+                    count ++;
+                }
+            }
+            a ++;
+        }
+        System.out.println(Arrays.deepToString(groups));
+        return input;
     }
 }
 
