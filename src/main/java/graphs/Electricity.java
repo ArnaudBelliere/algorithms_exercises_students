@@ -29,7 +29,11 @@ public class Electricity {
      */
     public static int minimumSpanningCost(int n, int [][] edges) {
         //TODO
-         return -1;
+
+        // the method to find the min spanning tree is too first sort the edges by their cost ( ascending ), then take all edges in order.
+        // when the edge taken forms a cycle ( i.e. the two nodes already are in the previously selected edges ), we skip it.
+        // comp should be O(n^2) ( while e : edges { if e in selectedEdges { .. } }
+        return -1;
     }
 
 }

@@ -89,7 +89,7 @@ public class Skyline {
             cur[1] = maxHeight[i];
             ret.add(cur);
         }
-        int cur[] = new int[2];
+        int[] cur = new int[2];
         cur[0] = len;
         cur[1] = 0;
         ret.add(cur);

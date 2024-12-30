@@ -42,17 +42,17 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
         // TODO initialize instance variables
         last = new Node();
         last.next = last;
-        int n =1;
+        n =1;
     }
 
     public boolean isEmpty() {
         // TODO
-         return n==0;
+         return n==1;
     }
 
     public int size() {
         // TODO
-         return n;
+         return n-1;
     }
 
     private long nOp() {
@@ -68,6 +68,7 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
     public void enqueue(Item item) {
         // TODO
         // last is defined and linked to the first node
+        nOp ++;
         Node nouv = new Node();
         nouv.item = item;
         // create a new node whose next is last.next
@@ -86,11 +87,12 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
      */
     public Item remove(int index) {
         // if last is at pos n-1 , then node first is node n-1+1 so (n-1)%n
+        nOp ++;
         int i = -1;
         Node curr = last;
-        if ( index<0 || index >= n){throw new IndexOutOfBoundsException();}
+        if ( index<0 || index >= size()){throw new IndexOutOfBoundsException();}
         while( i != index){
-            if( index == 0 ){break;}
+            if( i >= index){break;}
             curr = curr.next;
             i++;
         }
@@ -121,12 +123,12 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
     private class ListIterator implements Iterator<Item> {
 
         // TODO You probably need a constructor here and some instance variables
-        long n0p ;
+        private long nOp;
         private Node currentNode;
 
 
         private ListIterator(){
-            n0p = nOp();
+            nOp = nOp();
             currentNode = last.next.next ;
         }
 
@@ -142,7 +144,7 @@ public class CircularLinkedList<Item> implements Iterable<Item> {
 
         @Override
         public Item next() {
-             if (n0p != n0p){
+             if (nOp != nOp()){
                  throw new ConcurrentModificationException();
              }
              if ( !hasNext() ){

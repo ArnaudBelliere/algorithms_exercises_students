@@ -68,23 +68,44 @@ class SegmentedListImpl<T> implements SegmentedList<T> {
 
     // TODO: Implement the SegmentedList interface here
 
+    private List<List<T>> segmentList = new LinkedList<>();
+    private int nop = 0;
+
 
     // Add a new segment (list) to the SegmentedList.
     public void addSegment(List<T> segment) {
+        nop ++;
+        segmentList.add(segment);
     }
 
     // Remove a segment by its index.
     public void removeSegment(int index) {
+        nop ++;
+        if ( index < 0 || index >= segmentList.size() ){
+            throw new IndexOutOfBoundsException();
+        }
+        segmentList.remove(index);
     }
 
     // Get the total size of the segmented list (across all segments).
     public int size() {
-         return -1;
+        int i = 0;
+        for ( List<T> seg : segmentList){
+            i += seg.size();
+        }
+        return i;
     }
 
     // Retrieve an element at a global index (spanning all segments).
     public T get(int globalIndex) {
-         return null;
+         int i = 0;
+         for ( List<T> seg : segmentList ){
+             if ( globalIndex < i + seg.size()){
+                 return seg.get(globalIndex-i);
+             }
+             i += seg.size();
+         }
+         throw new IndexOutOfBoundsException();
     }
 
 
@@ -92,7 +113,42 @@ class SegmentedListImpl<T> implements SegmentedList<T> {
     // Return an iterator for the segmented list.
     @Override
     public Iterator<T> iterator() {
-         return null;
+        return new SegmentedListIterator();
+    }
+    
+    private class SegmentedListIterator implements Iterator<T> {
+
+        private int segmentIndex = 0; // Current segment we are traversing
+        private int elementIndex = 0; // Current element within the segment
+
+        private int t = nop;
+
+        @Override
+        public boolean hasNext() {
+            if (t != nop) {
+                throw new ConcurrentModificationException("Concurrent modification detected.");
+            }
+            // If we have reached the end of a segment, move to the next segment.
+            while (segmentIndex < segmentList.size()) {
+                if (elementIndex < segmentList.get(segmentIndex).size()) {
+                    return true; // There's more elements in this segment.
+                }
+                segmentIndex++;
+                elementIndex = 0; // Reset element index for the next segment.
+            }
+            return false; // No more elements left.
+        }
+
+        @Override
+        public T next() {
+            if (t != nop) {
+                throw new ConcurrentModificationException("Concurrent modification detected.");
+            }
+            if (!hasNext()) {
+                throw new NoSuchElementException("No more elements left.");
+            }
+            return segmentList.get(segmentIndex).get(elementIndex++);
+        }
     }
 
 
