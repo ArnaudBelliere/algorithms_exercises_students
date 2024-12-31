@@ -1,5 +1,4 @@
 package graphs;
-
 import java.util.*;
 
 /**
@@ -30,74 +29,56 @@ public class Electricity {
     public static int minimumSpanningCost(int n, int [][] edges) {
         //TODO
 
-        // the method to find the min spanning tree is too first sort the edges by their cost ( ascending ), then take all edges in order.
-        // when the edge taken forms a cycle ( i.e. the two nodes already are in the previously selected edges ), we skip it.
-        // comp should be O(n^2) ( while e : edges { if e in selectedEdges { .. } }
         int cost = 0;
-        ArrayList<int[]> sortedList = new ArrayList<>(Arrays.asList(edges));
-        sortedList.sort(Comparator.comparingInt(e -> e[2]));
-        ArrayList<Integer> visited = new ArrayList<>();
 
-        for (int i = 0 ; i < sortedList.size() ; i ++){
-            int curr = 2;
-            int e1 = sortedList.get(i)[0];
-            int e2 = sortedList.get(i)[1];
-            if ( !visited.contains(e1)){
-                visited.add(e1);
-                curr --;
-            }
-            if ( !visited.contains(e2)){
-                visited.add(e2);
-                curr --;
-            }
-            if ( curr < 2){
-                cost += sortedList.get(i)[2];
-                //System.out.println(" e1 : " + e1 + ", e2 : " + e2 + ", cost : " + sortedList.get(i)[2]);
-            }
-            if ( visited.size() >= n ){
-                break;
+        UnionFind uf = new UnionFind(n);
+
+        Arrays.sort(edges, (a,b) -> a[2] - b[2]);
+
+        for (int [] edge : edges){
+            int u = uf.find(edge[0]);
+            int v = uf.find(edge[1]);
+
+            if ( u!=v ){
+                uf.union(u,v);
+                cost += edge[2];
             }
         }
 
         return cost;
     }
 
-            /*
-        System.out.println("Before Sort : ");
-        for (int[] edge : sortedList) {
-            System.out.println(Arrays.toString(edge));
-        }
-        // already sorted ?
-        /*sortedList.sort(new Comparator<int[]>() {
-            @Override
-            public int compare(int[] e1, int[] e2) {
-                return Integer.compare(e1[2], e2[2]);
-            }
-        });
-        System.out.println("After Sort : ");
-        for (int[] edge : sortedList) {
-            System.out.println(Arrays.toString(edge));
-        }*/
+    static class UnionFind {
+        int[] parent;
+        int[] size;
 
-    /*
-            for (int i = 0 ; i < edges.length ; i ++){
-            int curr = 2;
-            int e1 = edges[i][0];
-            int e2 = edges[i][1];
-            if ( !visited.contains(e1)){
-                visited.add(e1);
-                curr --;
-            }
-            if ( !visited.contains(e2)){
-                visited.add(e2);
-                curr --;
-            }
-            if ( curr < 2){
-                cost += edges[i][2];
-            }
-            if ( visited.size() >= n ){
-                break;
+        UnionFind(int n){
+            parent = new int[n];
+            size = new int[n];
+
+            for (int i = 0 ; i < n ; i ++){
+                parent[i] = i;
+                size[i] = 1;
             }
         }
-        */
+
+        int find(int a){
+            return parent[a] == a ? a : find(parent[a]);
+        }
+
+        void union(int a, int b){
+            a = find(a);
+            b = find(b);
+
+            if (size[b]>size[a]){
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+
+            parent[b] = a;
+            size[a] += size[b];
+        }
+
+    }
 }
