@@ -49,8 +49,42 @@ public class WordTransformationSP {
      */
     public static int minimalCost(String from, String to) {
         // TODO
-         return 0;
+        HashMap<String, Integer> distance = new HashMap<>();
+        PriorityQueue<Rotation> queue = new PriorityQueue<>();
+        queue.add(new Rotation(from, 0));
+        distance.put(from, 0);
+        while (!queue.isEmpty()){
+            Rotation rotate = queue.poll();
+            String v = rotate.val;
+            for (int i = 0 ; i < v.length()-1 ; i ++){
+                for (int j = i+2 ; j <= v.length() ; j ++){
+                    String nouv = rotation(v,i,j);
+                    int cost = distance.get(v) + (j-i);
+                    if (!distance.containsKey(nouv) || distance.get(nouv) > cost){ // if distance doesnot contain this entry or the result is better
+                        distance.put(nouv,cost);
+                        queue.add(new Rotation(nouv,cost));
+                    }
+                }
+            }
+        }
+        return distance.get(to);
     }
 
+
+    public static class Rotation implements Comparable<Rotation>{
+
+        String val;
+        int dist;
+
+        Rotation(String value, int distance){
+            this.val = value;
+            this.dist = distance;
+        }
+
+        @Override
+        public int compareTo(Rotation o) {
+            return this.dist - o.dist;
+        }
+    }
 
 }
