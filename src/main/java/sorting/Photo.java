@@ -1,6 +1,9 @@
 package sorting;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * You're a photographer for a soccer meet.
@@ -37,6 +40,29 @@ public class Photo {
      *         no arrangement can be found, returns -1
      */
     public static int canTakePictures(int [] teamA, int [] teamB) {
-         return -2;
+        Arrays.sort(teamA);
+        Arrays.sort(teamB);
+        int cost = 0;
+        int cA = 0; // count for team A higher than B
+        int cB = 0;
+        for (int i = 0 ; i < teamA.length ; i ++){
+            int a = teamA[i];
+            int b = teamB[i];
+            if ( a == b ){
+                return -1;
+            }
+            if ( a > b){
+                cA ++;
+                cost += a-b;
+            }
+            if ( a < b ){
+                cB ++;
+                cost += b-a;
+            }
+        }
+        if ( cA != 0 && cB != 0){
+            return -1;
+        }
+        return cost;
     }
 }
