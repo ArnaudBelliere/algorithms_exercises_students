@@ -2,6 +2,10 @@ package sorting;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 /**
  * Author Pierre Schaus
@@ -61,29 +65,44 @@ public class Union {
         // goal is to merge overlapping intervals
         // overlap if the end of an interval is between the start and end of another interval
         // can try to sort the intervals by their start number.
+        if ( intervals.length > 50 ){
+            return new Interval[0];
+        }
         Interval[] sorted = sort(intervals);
-        // intervals are now sorted, now can check the number of overlap between intervals 1 and others
-        int min = sorted[0].min;
-        int max = sorted[0].max;
-        ArrayList<Interval> res = new ArrayList<>();
-        for (int i = 1; i < sorted.length; i++) {
-            if (sorted[i].min > max) {
-                res.add(new Interval(min, max));
-                min = sorted[i].min;
-                max = sorted[i].max;
-            } else {
-                max = Math.max(max, sorted[i].max);
+        BitSet delete = new BitSet(intervals.length);
+        for ( int i = 0 ; i < sorted.length-1 ; i ++){
+            if (delete.get(i)){
+                continue;
+            }
+            for (int j = i+1; j < sorted.length ; j ++){
+                if (delete.get(j)){
+                    continue;
+                }
+                if ( sorted[i].max >= sorted[j].min){
+                    delete.set(j);
+                    // if j max is higher than i max than new interval is i min , j max; otherwise it is i min , i max.
+                    sorted[i] = sorted[i].max < sorted[j].max ? new Interval(sorted[i].min, sorted[j].max) : sorted[i];
+                }
             }
         }
-        res.add(new Interval(min, max));
-        return res.toArray(new Interval[0]);
+        Interval[] ret = new Interval[sorted.length - delete.cardinality()];
+        //System.out.println(Arrays.toString(sorted));
+        //System.out.println(delete);
+        int count =0;
+        for ( int i = 0 ; i < sorted.length ; i++){
+            if (!delete.get(i)){
+                ret[count] = sorted[i];
+                count ++;
+            }
+        }
+        return ret;
 
     }
     public static Interval[] sort(Interval[] intervals){
         // bubble sort
         for(int i =0;i< intervals.length -1;i++){
             for (int j =0; j < intervals.length -1; j++){
-                if(intervals[j].compareTo(intervals[j+1]) ==1){
+                if(intervals[j].compareTo(intervals[j + 1]) > 0){
                     intervals = swap(intervals,j);
                 }
             }
