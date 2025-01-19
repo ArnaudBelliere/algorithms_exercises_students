@@ -1,5 +1,6 @@
 package graphs;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -48,10 +49,85 @@ public class SmallestPrice {
      */
     public static int getSmallestPrice(WeightedGraph graph, int source, int maxTime, List<Pair> destinations) {
         // TODO
-         return -1;
+        //UnionFind uf = new UnionFind(graph.V());
+        /*
+        ArrayList<int[]> edges = new ArrayList<>();
+        for (int i = 0 ; i < graph.V(); i ++){
+            for (DirectedEdge e : graph.adj[i]){
+                int[] edge = new int[]{e.v,e.w,e.weight};
+                edges.add(edge);
+            }
+        }
+        */
+        //Arrays.sort(edges, Comparator.comparingInt(a -> a[2]));
+        //edges.sort(Comparator.comparingInt(a -> a[2]));
 
+        int min = 100000;
+        int n = graph.V();
+        int[] prices = new int[n];
+        int[] distances = new int [n];
+        for (int i = 0 ; i < graph.V() ; i++){
+            prices[i] = -1;
+            distances[i] = 100000;
+        }
+        for ( Pair dest : destinations){
+            prices[dest.node] = dest.getPrice();
+        }
+        distances[source] = 0;
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        queue.add(source);
+        while (!queue.isEmpty()){
+            int u = queue.poll();
+            for (DirectedEdge e : graph.adj[u]){
+                //System.out.println("u : " + u +", e 0 : "+ e.v);
+                int newdist = distances[u] + e.weight;
+                if ( newdist < distances[e.w]){ // u is the current smallest path to get to w
+                    distances[e.w] = newdist; // update the new dist and add w to the node to search from
+                    queue.add(e.w);
+                }
+            }
+        }
+        for (int i = 0 ; i < n ; i++){
+            if ( distances[i] <= maxTime && prices[i] != -1){
+                min = Math.min(min,prices[i]);
+            }
+        }
+        return min == 100000 ? -1 : min;
     }
 
+    /*
+    private static class UnionFind {
+        int[] parent;
+        int[] size;
+
+        UnionFind(int n){
+            parent = new int[n];
+            size = new int[n];
+
+            for (int i = 0 ; i < n ; i++){
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+        int find(int a){
+            return parent[a] == a ? a : find(parent[a]);
+        }
+
+        void union(int a, int b){
+            a = find(a);
+            b = find(b);
+
+            if ( size[b] > size[a]){
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+
+            parent[b] = a;
+            size[a] += size[b];
+        }
+    }
+    */
 
 
 
@@ -171,5 +247,4 @@ public class SmallestPrice {
 
 
     }
-
 }
