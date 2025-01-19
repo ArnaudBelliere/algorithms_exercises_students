@@ -48,6 +48,17 @@ public class CandiesBag {
      */
     public static int findMaximumSize(int[] array, int k) {
         // TODO
-         return -1;
+        int bestk = -1;
+        int n = array.length;
+        for(int i = 0 ; i < n ; i++){
+            int cost = 0;
+            for (int j = i ; j < n ; j++){
+                cost += array[j];
+                if ( cost == k && j-i > bestk){
+                    bestk = j-i+1;
+                }
+            }
+        }
+        return bestk;
     }
 }
