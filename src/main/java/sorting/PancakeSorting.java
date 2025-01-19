@@ -1,6 +1,10 @@
 package sorting;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
  * Santa’s elves are preparing for Christmas, but there’s a problem in the North Pole kitchen! They’ve
  * accidentally stacked the Christmas pancakes (each with a unique festive design) in the wrong order. Santa, being
@@ -66,6 +70,40 @@ public class PancakeSorting {
      */
     public static int[] sort(int[] array) {
         // TODO
-         return null;
+        ArrayList<Integer> ret = new ArrayList<>();
+        ArrayList<Integer> sorted = new ArrayList<>();
+        for (int elem : array){
+            sorted.add(elem);
+        }
+        Collections.sort(sorted);
+        boolean direct = true;
+        for (int i = 0 ; i < array.length; i ++){
+            if ( array[i] != sorted.get(i)){
+                direct = false;
+                break;}}
+        if ( direct ){return new int[]{};}
+        int n = array.length-1;
+        for (int i = 0 ; i < n ; i ++){
+            int j = n-i;
+            int firstFlip = getIndex(sorted.get(j), array);
+            flip(array, firstFlip); // flip the array
+            flip(array, j);
+            ret.add(firstFlip);
+            ret.add(j);
+        }
+        int[] rett = new int[ret.size()];
+        for(int i = 0 ; i < ret.size(); i ++){
+            rett[i] = ret.get(i);
+        }
+        return rett;
+    }
+
+    public static int getIndex(int number, int[] array){
+        for (int i = 0 ; i < array.length ; i ++){
+            if ( array[i] == number ){
+                return i;
+            }
+        }
+        return -1;
     }
 }

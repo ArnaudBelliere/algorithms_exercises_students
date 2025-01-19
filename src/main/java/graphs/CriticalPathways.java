@@ -1,5 +1,7 @@
 package graphs;
 
+import sorting.Union;
+
 import java.util.HashSet;
 
 /**
@@ -67,6 +69,43 @@ public class CriticalPathways {
      */
     public static int[][] findCriticalPathways(HashSet<Integer>[] adj) {
         // TODO
-         return null;
+        UnionFind uf = new UnionFind(adj.length);
+
+        return null;
+    }
+
+
+    private static class UnionFind {
+        int[] parent;
+        int[] size;
+
+        UnionFind(int n){
+            parent = new int[n];
+            size = new int[n];
+
+            for (int i = 0 ; i < n ; i ++){
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        int find(int a){
+            return parent[a] == a ? a : find(parent[a]);
+        }
+
+        void union(int a, int b){
+            a = find(a);
+            b = find(b);
+
+            if ( size[b] > size[a]){
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+
+            parent[b] = a;
+            size[a] += size[b];
+            return;
+        }
     }
 }

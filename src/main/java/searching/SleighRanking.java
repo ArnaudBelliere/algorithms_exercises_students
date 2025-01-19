@@ -1,5 +1,7 @@
 package searching;
 
+import java.util.Arrays;
+
 /**
  * Rudolph is organising a sleigh race for the reindeers this Christmas Eve, and he needs your help to keep track of
  * the results. Each reindeer enters the race one at a time, and Rudolph wants to know the ranking of each reindeer
@@ -57,6 +59,20 @@ public class SleighRanking {
      */
     public static int[] computeRankings(int[] array) {
         // TODO
-         return null;
+        // barbare n^2 :
+        //System.out.println(Arrays.toString(array));
+        int n = array.length;
+        int[] ret = new int[n];
+        for (int i = 1 ; i < n ; i ++){
+            int count = 0;
+            for (int j = i-1 ; j >= 0 ; j--){ // for each i we check how much faster reindeer there were before him
+                if ( array[j] < array[i]){
+                    count ++;
+                }
+            }
+            ret[i] = count;
+        }
+        //System.out.println(Arrays.toString(ret));
+        return ret;
     }
 }

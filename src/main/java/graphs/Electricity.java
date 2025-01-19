@@ -1,4 +1,5 @@
 package graphs;
+
 import java.util.*;
 
 /**
@@ -28,27 +29,24 @@ public class Electricity {
      */
     public static int minimumSpanningCost(int n, int [][] edges) {
         //TODO
-
-        int cost = 0;
-
         UnionFind uf = new UnionFind(n);
+        int cost = 0;
+        Arrays.sort(edges, Comparator.comparingInt(a -> a[2]));
 
-        Arrays.sort(edges, (a,b) -> a[2] - b[2]);
+        for (int[] e : edges){
+            int u = uf.find(e[0]);
+            int v = uf.find(e[1]);
 
-        for (int [] edge : edges){
-            int u = uf.find(edge[0]);
-            int v = uf.find(edge[1]);
-
-            if ( u!=v ){
+            if ( u !=v){
                 uf.union(u,v);
-                cost += edge[2];
+                cost += e[2];
             }
         }
 
         return cost;
     }
 
-    static class UnionFind {
+    private static class UnionFind {
         int[] parent;
         int[] size;
 
@@ -70,7 +68,7 @@ public class Electricity {
             a = find(a);
             b = find(b);
 
-            if (size[b]>size[a]){
+            if ( size[b] > size[a]){
                 int temp = a;
                 a = b;
                 b = temp;
@@ -78,7 +76,7 @@ public class Electricity {
 
             parent[b] = a;
             size[a] += size[b];
+            return;
         }
-
     }
 }

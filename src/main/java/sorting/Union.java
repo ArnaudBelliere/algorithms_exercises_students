@@ -59,7 +59,6 @@ public class Union {
      */
     public static Interval[] union(Interval[] intervals) {
         // TODO
-        System.out.println(Arrays.toString(intervals));
         if (intervals.length == 0) return intervals;
         Arrays.sort(intervals);
         int min = intervals[0].min;
@@ -75,7 +74,6 @@ public class Union {
             }
         }
         res.add(new Interval(min, max));
-        System.out.println(res);
         return res.toArray(new Interval[0]);
     }
 
