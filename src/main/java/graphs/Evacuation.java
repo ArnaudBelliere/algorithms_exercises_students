@@ -59,16 +59,11 @@ public class Evacuation {
         }
         while(!queue.isEmpty()){
             int u = queue.poll();
-            //System.out.println("u : "+ u);
-            //System.out.println("adj map de "+u + " : " + adjMap.get(u));
             for (int i : adjMap.get(u)){
-                //System.out.println("curr u : " + u + ", Neigh i : " + i);
                 int newdist = distance[u]+graph[i][u];
-                if (distance[i] > newdist){
+                if (distance[i] > newdist){ // if the new distance is better then update.
                     distance[i] = newdist;
-                    //System.out.println("neighbor : "  + i);
-                    //System.out.println("u,v : "+u + " , " + i);
-                    distMap.put(i,u); // add i and the distance / the next node u
+                    distMap.put(i,u); // add i and the next node u
                     queue.add(i);
                 }
             }
