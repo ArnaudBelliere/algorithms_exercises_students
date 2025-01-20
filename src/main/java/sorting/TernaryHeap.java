@@ -55,6 +55,7 @@ public class TernaryHeap {
     // Array representing the heap. This is where all the values must be added
     // let this variable protected so that it can be accessed from the test suite
     protected int[] content;
+    int size;
 
 
 
@@ -64,6 +65,8 @@ public class TernaryHeap {
      */
     public TernaryHeap(int capacity) {
         // TODO
+        content = new int[capacity];
+        size = 0;
     }
 
     /**
@@ -71,7 +74,7 @@ public class TernaryHeap {
      */
     public int size() {
         // TODO
-         return -1;
+        return size;
     }
 
 
@@ -82,7 +85,23 @@ public class TernaryHeap {
      */
     public void insert(int x) {
         // TODO
-        
+        content[size++] = x;
+        swim(size-1);
+    }
+
+    private void swim(int i) {
+        int parent = (i-1)/3;
+        while (parent>=0 && content[parent] < content[i]){
+            swap(i,parent);
+            i = parent;
+            parent = (i-1)/3;
+        }
+    }
+
+    private void swap(int i, int j){
+        int temp = content[i];
+        content[i] = content[j];
+        content[j] = temp;
     }
 
     /**
@@ -91,7 +110,39 @@ public class TernaryHeap {
      */
     public int delMax() {
         // TODO
-         return Integer.MIN_VALUE;
+        int ret = content[0];
+        swap(0,--size);
+        sink(0);
+        return ret;
+    }
+
+    private void sink(int k) {
+        while (3*k < size){
+            int largest = largestChild(k);
+            if (largest ==-1){
+                break;
+            }
+            if (content[k] >= content[largest]){
+                break;
+            }
+            swap(k,largest);
+            k = largest;
+        }
+    }
+
+    private int largestChild(int i) {
+        if (3 * i +1 > size - 1) return -1;
+        int index = 3 * i + 1;
+        int max = content[index];
+        int maxIndex = index;
+        for (int j : new int[]{index + 1, index + 2}) {
+            if (j < size && content[j] > max) {
+                maxIndex = j;
+                max = content[j];
+            }
+        }
+        return maxIndex;
+
     }
 
     /**
@@ -99,7 +150,7 @@ public class TernaryHeap {
      */
     public int getMax() {
         // TODO
-         return Integer.MIN_VALUE;
+        return content[0];
     }
 
 
