@@ -78,7 +78,7 @@ public class GlobalWarming {
                 if (points.get(i) > waterLevel && points.get(i) > waterLevel){
                     int u = uf.find(i);
                     int v = uf.find(j);
-                    if ( u == v  ){
+                    if ( u != v  ){
                         uf.union(u,v);
                     }
                     else{
@@ -96,7 +96,7 @@ public class GlobalWarming {
      * Expected time complexity O(1)
      */
     public int nbIslands() {
-         return 4;
+         return nbIslands;
     }
 
     /**
