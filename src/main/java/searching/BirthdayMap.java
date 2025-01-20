@@ -42,6 +42,8 @@ class BirthdayMap {
     void addPerson(Person person) {
         // TODO
         // find place
+        this.map.putIfAbsent(person.birthday, new ArrayList<>());
+        this.map.get(person.birthday).add(person);
     }
 
     /**
@@ -53,7 +55,11 @@ class BirthdayMap {
      */
     List<Person> getPeopleBornOnDate(String date) {
         // TODO
-         return null;
+        //return this.map.getOrDefault(date, new ArrayList<>());
+        if (this.map.containsKey(date)){
+            return this.map.get(date);
+        }
+        return new ArrayList<>();
     }
 
 
@@ -67,7 +73,14 @@ class BirthdayMap {
      */
     List<Person> getPeopleBornInYear(String year) {
         // TODO
-         return null;
+        List<Person> result = new ArrayList<>();
+        String start = year+"-01-01";
+        String end = (Integer.parseInt(year)+1)+"-01-01";
+        SortedMap<String, List<Person>> subMap = this.map.subMap(start, end);
+        for (List<Person> people : subMap.values()) {
+            result.addAll(people);
+        }
+        return result;
     }
 
 

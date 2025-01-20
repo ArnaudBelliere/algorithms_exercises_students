@@ -1,5 +1,10 @@
 package sorting;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.PriorityQueue;
+
 /**
  * The Olympic Games organizers need to allocate facilities for the athletes' training sessions.
  * Each team has a schedule of training sessions with a start and end time
@@ -46,7 +51,19 @@ public class TrainingSessions {
      */
     public int minFacilitiesRequired(int[][] sessions) {
         // TODO
-         return -1;
+        if ( sessions.length == 0 ){
+            return 0;
+        }
+        Arrays.sort(sessions, (u,v) -> u[0] == v[0] ? u[1] - v[1] : u[0]-v[0]);
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        queue.add(sessions[0][1]);
+        for (int i = 1 ; i < sessions.length ; i ++){
+            if ( queue.peek() <= sessions[i][0]){ // if the last sessions does not overlap with this one then izfine
+                queue.poll(); // so we remove it and go to the next one.
+            } // else we de not remove the overlapping sessions
+            queue.add(sessions[i][1]);
+        }
+        return queue.size();
     }
 
 
