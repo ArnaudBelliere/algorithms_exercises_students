@@ -1,9 +1,6 @@
 package graphs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * The erdos number is a "collaborative distance" metric to Paul Erdos (a prolific mathematician)
@@ -17,14 +14,14 @@ import java.util.LinkedList;
  *
  * Given this set of co-authors relations:
  *
- * 		{ "Paul Erdös", "Edsger W. Dijkstra" }
- * 		{ "Edsger W. Dijkstra", "Alan M. Turing" }
- * 		{ "Edsger W. Dijkstra", "Donald Knuth" }
- * 		{ "Donald Knuth", "Stephen Cook", "Judea Pearl" }
+ *          { "Paul Erdös", "Edsger W. Dijkstra" }
+ *          { "Edsger W. Dijkstra", "Alan M. Turing" }
+ *          { "Edsger W. Dijkstra", "Donald Knuth" }
+ *          { "Donald Knuth", "Stephen Cook", "Judea Pearl" }
  *
- * 	The erdos number of Paul Erdos is 0, of Edsger W. Dijkstra is 1, of Alan M. Turing is 2, of Donald Knuth is 2, of Stephen Cook is 3.
+ *  The erdos number of Paul Erdos is 0, of Edsger W. Dijkstra is 1, of Alan M. Turing is 2, of Donald Knuth is 2, of Stephen Cook is 3.
  *
- * 	Debug your code on the small examples in the test suite.
+ *  Debug your code on the small examples in the test suite.
  */
 public class Erdos {
 
@@ -40,8 +37,52 @@ public class Erdos {
 	 *
 	 * @param articlesAuthors An ArrayList of String arrays, where each array represents the list of authors of a single article.
 	 */
+	HashMap<String, Integer> distMap = new HashMap<>();
+
 	public Erdos(ArrayList<String []> articlesAuthors) {
 		// TODO
+		HashMap<String, ArrayList<String>> adjMap = new HashMap<>(); // map id , adjacent nodes
+		for (String[] str : articlesAuthors){
+			for (int i = 0 ; i < str.length ; i ++){
+				for (int j = i+1 ; j < str.length ; j++){
+					if (!adjMap.containsKey(str[i])){
+						adjMap.put(str[i], new ArrayList<>());
+					}
+					if (!adjMap.containsKey(str[j])){
+						adjMap.put(str[j], new ArrayList<>());
+					}
+					adjMap.get(str[i]).add(str[j]);
+					adjMap.get(str[j]).add(str[i]);
+				}
+			}
+		}
+		//System.out.println("Here ?");
+		PriorityQueue<String> queue = new PriorityQueue<>();
+		queue.add(erdos);
+		distMap.put(erdos,0);
+		//System.out.println("Working");
+		while (!queue.isEmpty()){
+			//System.out.println("In");
+			String u = queue.poll();
+			//System.out.println("In again");
+			int cost = distMap.get(u) +1;
+			//System.out.println("In still");
+			for (String v : adjMap.get(u)){
+				//System.out.println("Inside");
+				if (distMap.containsKey(v)){
+					//System.out.println("The crash");
+					if (distMap.get(v) > cost){
+						distMap.remove(v);
+						distMap.put(v,cost);
+					}
+				}
+				else{
+					//System.out.println("Or");
+					distMap.put(v,cost);
+					queue.add(v);
+				}
+			}
+		}
 	}
 
 	/**
@@ -52,7 +93,7 @@ public class Erdos {
 	 */
 	public int findErdosNumber(String author) {
 		// TODO
-		 return -1;
+		return distMap.get(author);
 	}
 
 }
