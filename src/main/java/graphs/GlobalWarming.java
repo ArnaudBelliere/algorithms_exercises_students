@@ -1,6 +1,9 @@
 package graphs;
 
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 /**
  * In this exercise, we revisit the GlobalWarming
  * class from the sorting package.
@@ -44,7 +47,9 @@ package graphs;
  */
 public class GlobalWarming {
 
-
+    UnionFind uf;
+    int nbIslands;
+    int k;
     /**
      * Constructor. The run time of this method is expected to be in 
      * O(n x log(n)) with n the number of entry in the altitude matrix.
@@ -53,6 +58,36 @@ public class GlobalWarming {
      * @param waterLevel the water level under which the entries are submerged
      */
     public GlobalWarming(int [][] altitude, int waterLevel) {
+        HashMap<Integer, Integer> points = new HashMap<>();
+        k = altitude.length;
+        //System.out.println(altitude.length);
+        System.out.println(Arrays.deepToString(altitude));
+        for (int i = 0 ; i < k ; i ++){
+            for (int j = 0 ; j < k ; j ++){
+                //System.out.println("can it enter");
+                points.put(i*k+j,altitude[i][j]);
+            }
+        }
+        //System.out.println("does it get out ?");
+        nbIslands = 0;
+        int n = k*k;
+        System.out.println(n);
+        uf = new UnionFind(n);
+        for (int i = 0 ; i < n ; i++){
+            for ( int j = i+1 ; j < n ; j ++){
+                if (points.get(i) > waterLevel && points.get(i) > waterLevel){
+                    int u = uf.find(i);
+                    int v = uf.find(j);
+                    if ( u == v  ){
+                        uf.union(u,v);
+                    }
+                    else{
+                        nbIslands ++;
+                    }
+                }
+
+            }
+        }
     }
 
     /**
@@ -61,7 +96,7 @@ public class GlobalWarming {
      * Expected time complexity O(1)
      */
     public int nbIslands() {
-         return 0;
+         return 4;
     }
 
     /**
@@ -73,7 +108,13 @@ public class GlobalWarming {
      * @param p2 the second point to compare
      */
     public boolean onSameIsland(Point p1, Point p2) {
-         return false;
+        // convert to Point to int[] and check if parent p1 == parent p2
+        System.out.println("p1 : " + p1.getX() + " "+ p1.getY());
+        System.out.println("p2 : " + p2.getX() + " "+ p2.getY());
+        int point1 = uf.find(p1.getX()*k+p1.getY());
+        int point2 = uf.find(p2.getX()*k+p2.getY());
+        System.out.println(point1 + " " +point2);
+        return point1 == point2;
     }
 
 
@@ -106,6 +147,40 @@ public class GlobalWarming {
                 return p.x == this.x && p.y == this.y;
             }
             return false;
+        }
+    }
+
+    private static class UnionFind {
+        int[] parent;
+        int[] size;
+
+        UnionFind(int n){
+            parent = new int[n];
+            size = new int[n];
+
+
+            for (int i = 0 ; i < n ; i++){
+                size[i]=1;
+                parent[i] =i;
+            }
+        }
+
+        int find(int a){
+            return parent[a] == a ? a : find(parent[a]);
+        }
+
+        void union(int a, int b){
+            a = find(parent[a]);
+            b = find(parent[b]);
+
+            if ( size[b] > size[a]){
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+
+            parent[b] = a;
+            size[a] += size[b];
         }
     }
 }
