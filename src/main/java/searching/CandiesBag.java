@@ -1,6 +1,8 @@
 package searching;
 
 
+import java.util.HashMap;
+
 /**
  * Santa’s elves are hard at work preparing gift bags filled with candies for children. Each candy has a specific
  * sweetness level. To ensure the children enjoy their treats while staying healthy, Santa has set a strict rule: every
@@ -48,17 +50,21 @@ public class CandiesBag {
      */
     public static int findMaximumSize(int[] array, int k) {
         // TODO
-        int bestk = -1;
-        int n = array.length;
-        for(int i = 0 ; i < n ; i++){
-            int cost = 0;
-            for (int j = i ; j < n ; j++){
-                cost += array[j];
-                if ( cost == k && j-i > bestk){
-                    bestk = j-i+1;
-                }
+        HashMap<Integer, Integer> sums = new HashMap<>();// maps of sum , number of elem in the sum
+        sums.put(0, 0);
+        int currentSum = 0;
+        int maxK = 0;
+        // compute the sum of the j elements and put them in the array
+        // the sum computed at the j+2 elements will be the sum of the j elements + the sum of the 2 next elements so we have the other sum.
+        for (int i = 0; i < array.length; i++) {
+            currentSum += array[i];
+            if (sums.containsKey(currentSum-k)){
+                maxK = Math.max(maxK, i-sums.get(currentSum-k)+1);
+            }
+            if (!sums.containsKey(currentSum)){
+                sums.put(currentSum,i+1);
             }
         }
-        return bestk;
+        return maxK;
     }
 }
