@@ -58,7 +58,28 @@ import java.util.Map;
          */
         public boolean isValid(List<String> schedule) {
             // TODO
-             return false;
+            System.out.println("\n New call :");
+            System.out.println(" The schedule : " + schedule);
+            //System.out.println(schedule.get(0));
+            HashMap<String, Integer> visited = new HashMap<>();
+            for (String assign : schedule){
+                if (visited.containsKey(assign)){
+                    return false;
+                }
+                System.out.println("Current task : "+ assign +", dependencies : " + graph.get(assign));
+                for ( String depen : graph.get(assign)){
+                    if (!visited.containsKey(depen)){
+                        return false;
+                    }
+                }
+                visited.put(assign,1);
+            }
+            for ( String i : graph.keySet()){
+                if(!visited.containsKey(i)){
+                    return false;
+                }
+            }
+            return true;
         }
 
 

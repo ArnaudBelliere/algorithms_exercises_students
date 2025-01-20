@@ -91,7 +91,7 @@ public class CriticalPathways {
     }
 
     public static boolean isConnexe(ArrayList<int[]> edges){
-
+        return true;
     }
 
     public static ArrayList<int[]> computeMST(HashSet<Integer>[] adj){
