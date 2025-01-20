@@ -1,6 +1,8 @@
 package sorting;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Author Pierre Schaus
@@ -59,11 +61,47 @@ abstract class GlobalWarming {
 
 public class GlobalWarmingImpl extends GlobalWarming {
 
+    HashMap<Integer, Integer> safeMap = new HashMap<>();
+    int lowest;
+    int highest;
+    int[] altArray;
 
     public GlobalWarmingImpl(int[][] altitude) {
         super(altitude);
         // TODO
         // expected pre-processing time in the constructror : O(n^2 log(n^2))
+        HashMap<Integer, Integer> altMap = new HashMap<>(); // map altitude, nb points
+        for (int[] i : altitude){
+            for (int j : i){
+                if (altMap.containsKey(j)){
+                    int count = altMap.get(j);
+                    altMap.remove(j);
+                    altMap.put(j,count+1);
+                }
+                else{
+                    altMap.put(j,1);
+                }
+            }
+        }
+        //System.out.println(altMap);
+        Set<Integer> altList = altMap.keySet();
+        int n = altList.size();
+        altArray = new int[n];
+        int k = 0;
+        for (int i : altList){
+            altArray[k] = i;
+            k++;
+        }
+        //System.out.println(altList);
+        for (int i = 0; i < n ; i++){
+            int count = 0;
+            for (int j = i ; j < n; j++){
+                count += altMap.get(altArray[j]);
+            }
+            safeMap.put(altArray[i],count);
+        }
+        lowest = altArray[0];
+        highest= altArray[n-1];
 
     }
 
@@ -75,7 +113,20 @@ public class GlobalWarmingImpl extends GlobalWarming {
     public int nbSafePoints(int waterLevel) {
         // TODO
         // expected time complexity O(log(n^2))
-         return -1;
+        //System.out.println("Entering here then ?");
+        int ret;
+        //System.out.println(safeMap);
+        if (waterLevel< lowest){
+            ret = safeMap.get(lowest);
+        }
+        else if (waterLevel+1 > highest){
+            ret = 0;
+        }
+        else {
+            ret = safeMap.get(waterLevel+1);
+        }
+        //System.out.println("water level : " + waterLevel +", ret : "+ ret);
+        return ret;
     }
 
 
