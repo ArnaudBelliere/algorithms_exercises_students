@@ -3,6 +3,8 @@ package graphs;
 //feel free to import anything here
 
 
+import java.util.Arrays;
+
 /**
  * You just bought yourself the latest game from the Majong™
  * studio (recently acquired by Macrosoft™): MineClimb™.
@@ -45,6 +47,7 @@ public class MineClimbing {
      */
     public static int best_distance(int[][] map, int startX, int startY, int endX, int endY) {
         // TODO
-         return 0;
+        System.out.println(Arrays.deepToString(map));
+        return Math.abs(map[startX][startY]-map[endX][endY]);
     }
 }
