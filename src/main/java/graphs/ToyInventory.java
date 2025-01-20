@@ -1,6 +1,8 @@
 package graphs;
 
 
+import java.util.*;
+
 /**
  * Santa’s workshop is buzzing with activity, but there’s trouble in the toy inventory department! The elves in charge
  * of managing the stock have lost their counts for the total inventory and the crucial list linking each toy to its
@@ -58,6 +60,104 @@ public class ToyInventory {
      */
     public static int[] answerRequests(String[][] relations, String[] occurrencesName, int[] occurrencesCount, String[] requests) {
         // TODO
-         return null;
+        //System.out.println(Arrays.toString(occurrencesName));
+        //System.out.println(Arrays.toString(occurrencesCount));
+        HashMap<String, Integer> counter = new HashMap<>();
+        int m = occurrencesName.length;
+        for (int i = 0 ; i < m; i++){
+            String str = occurrencesName[i];
+            if(counter.containsKey(str)){
+                int count = occurrencesCount[i] +counter.get(str);
+                counter.remove(str);
+                counter.put(str,count);
+            }
+            else{
+                counter.put(str,occurrencesCount[i]);
+            }
+        }
+        //String[] entry = counter.keySet().toArray(new String[0]);
+        //System.out.println("counter map : " + counter);
+        int n = counter.size();
+        HashMap<String, Integer> indexing = new HashMap<>();
+        HashMap<Integer, String> indexToName = new HashMap<>();
+        int a = 0;
+        for (int i = 0 ; i < m ; i++){
+            String str = occurrencesName[i];
+            if (indexing.containsKey(str)){
+                a += 1;
+            }
+            else{
+                indexing.put(occurrencesName[i],i-a);
+                indexToName.put(i-a,occurrencesName[i]);
+            }
+        }
+        //System.out.println("index map : " + indexing);
+        int[] array = new int[n];
+        for (int i = 0 ; i < n ; i ++){
+            array[i] = counter.get(indexToName.get(i)); // counter array to initialize uf
+        }
+        //System.out.println("counter array before relations : " + Arrays.toString(array));
+        UnionFind uf = new UnionFind(n,array);
+        for(String[] relation: relations){
+            int u = uf.find(indexing.get(relation[0]));
+            int v = uf.find(indexing.get(relation[1]));
+            if ( u!= v ){
+                uf.union(u,v);
+            }
+        }
+        int[] count = uf.getCount(); // new counter array after the relations
+        //System.out.println("counter array after relations : " + Arrays.toString(count));
+        // for i in requests, if i is in index blabla then find parent and return parent, else 0
+        int k = requests.length;
+        int[] ret = new int[k];
+        for(int i = 0 ; i < k ; i ++){
+            String str = requests[i];
+            if(!indexing.containsKey(str)){
+                ret[i]= 0;
+            }
+            else{
+                int u = uf.find(indexing.get(str)); // mon index
+                ret[i] = count[u];
+            }
+        }
+        //System.out.println("requests : " + Arrays.toString(requests));
+        //System.out.println("return : " + Arrays.toString(ret));
+        return ret;
+    }
+
+    private static class UnionFind {
+        int[] parent;
+        int[] count;
+
+        UnionFind(int n, int[] array){
+            parent = new int[n];
+            count = new int[n];
+
+            for (int i = 0 ; i < n ; i ++){
+                parent[i] = i;
+                count[i] = array[i];
+            }
+        }
+
+        int find(int a){
+            return parent[a] == a ? a : find(parent[a]);
+        }
+
+        void union(int a, int b){
+            a = find(a);
+            b = find(b);
+
+            if( count[b] > count[a]){
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+
+            parent[b] = a;
+            count[a] += count[b];
+        }
+        int[] getCount(){
+            return count;
+        }
     }
 }
