@@ -147,14 +147,20 @@ public class ToyInventory {
             a = find(a);
             b = find(b);
 
-            if( count[b] > count[a]){
+            /*if( count[b] > count[a]){
                 int temp = a;
+                a = b;
+                b = temp;
+            }*/
+            if ( b < a){
+                int temp = a ;
                 a = b;
                 b = temp;
             }
 
             parent[b] = a;
             count[a] += count[b];
+            count[b] = count[a];
         }
         int[] getCount(){
             return count;
