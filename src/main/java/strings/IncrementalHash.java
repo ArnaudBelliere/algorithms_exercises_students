@@ -55,7 +55,9 @@ public class IncrementalHash {
         //  by developing h[t], you should realize that is has a lot of common with h[t-1] = previousHash
         //  The RM values computed above might help you as well in the computation.
         //  Hint2: Modulo operator is distributive (A + B) % Q = (A % Q + B % Q) % Q (property exploited by Horners's method)
-        //  Hint3: To compute B % Q if you have x = (A + B) % Q, you should do (x + Q - A % Q) % Q
-         return 0;
+        //  Hint3: To compute B % Q if you have x = (A + B) % Q, you should do (x + Q - A % Q) %
+        int previous = previousHash + Q - (t[from-1]* RM) % Q;
+        int current = ( ( previous * R) % Q + t[from+M-1]) % Q;
+        return current;
     }
 }

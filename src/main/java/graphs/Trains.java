@@ -71,27 +71,26 @@ public class Trains {
      *         The map must contain the starting station
      */
     public static Map<String, Integer> reachableEarliest(HashMap<StationTime, LinkedList<StationTime>> relations, StationTime startPoint) {
-        HashMap<String, Integer> ret = new HashMap<>();
-        ret.put(startPoint.station, startPoint.time);
+        HashMap<String, Integer> timeMap = new HashMap<>();
+        timeMap.put(startPoint.station, startPoint.time);
         PriorityQueue<StationTime> queue = new PriorityQueue<>();
-        //queue.add(startPoint);
-        queue.addAll(relations.keySet());
-        while (!queue.isEmpty()){
+        queue.addAll((relations.keySet()));
+        while(!queue.isEmpty()){
             StationTime current = queue.poll();
-            if ( ret.containsKey(current.station) && ret.get(current.station) <= current.time){
-                // if the current is already in the station and it is reachable from the current time
-                for (StationTime neigh : relations.get(current)){
-                    boolean isIn = ret.containsKey(neigh.station);
-                    if ( isIn && ret.get(neigh.station) > neigh.time){ // the new time of neighbor is better
-                        ret.put(neigh.station, neigh.time);
+            if ( timeMap.containsKey(current.station) && timeMap.get(current.station) <= current.time){ // we can go to this station and depart from it.
+                for (StationTime neighbor : relations.get(current)){
+                    boolean inMap = timeMap.containsKey(neighbor.station);
+                    if (inMap && neighbor.time <= timeMap.get(neighbor.station)){ // got a better time to reach this neighbor station
+                        timeMap.remove(neighbor.station);
+                        timeMap.put(neighbor.station, neighbor.time);
                     }
-                    else if(!isIn){
-                        ret.put(neigh.station, neigh.time);
+                    else if(!inMap){
+                        timeMap.put(neighbor.station, neighbor.time);
                     }
                 }
             }
         }
-        return ret;
+        return timeMap;
     }
 
     public static class StationTime implements Comparable<StationTime> {
