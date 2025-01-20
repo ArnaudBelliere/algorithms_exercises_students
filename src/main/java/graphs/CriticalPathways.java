@@ -1,8 +1,6 @@
 package graphs;
 
-import sorting.Union;
-
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Santa’s sleigh relies on a magical communication network of relay stations and bidirectional magic pathways. This
@@ -69,9 +67,50 @@ public class CriticalPathways {
      */
     public static int[][] findCriticalPathways(HashSet<Integer>[] adj) {
         // TODO
-        UnionFind uf = new UnionFind(adj.length);
-
+        //System.out.println(Arrays.toString(adj));
+        System.out.println(computeMST(adj));
+        ArrayList<int[]> edges = computeMST(adj);
+        for (int[] e : edges){
+            System.out.println(Arrays.toString(e));
+        }
+        // the mst is computed so only edges in the MST can be critical
+        // need to check for each edge if the graph becomes unconnected
+        ArrayList<int[]> critical = new ArrayList<>();
+        HashMap<int[], Integer> visited = new HashMap<>();
+        for (int[] e : edges){
+            if ( !visited.containsKey(e)){
+                edges.remove(e);
+                if (isConnexe(edges)){
+                    critical.add(e);
+                }
+                edges.add(e);
+                visited.put(e,1);
+            }
+        }
         return null;
+    }
+
+    public static boolean isConnexe(ArrayList<int[]> edges){
+
+    }
+
+    public static ArrayList<int[]> computeMST(HashSet<Integer>[] adj){
+        //System.out.println(Arrays.toString(adj));
+        UnionFind uf = new UnionFind(adj.length);
+        ArrayList<int[]> edges = new ArrayList<>();
+        for (int i = 0; i < adj.length; i ++){
+            //System.out.println(i);
+            for (int j : adj[i]){
+                //System.out.println("entre");
+                int u = uf.find(i);
+                int v = uf.find(j);
+                if ( u != v){
+                    uf.union(u,v);
+                    edges.add(new int[]{i,j});
+                }
+            }
+        }
+        return edges;
     }
 
 
