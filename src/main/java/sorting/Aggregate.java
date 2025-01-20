@@ -75,12 +75,36 @@ public class Aggregate {
      * There is a tie between 2 and 5, but 2 is smaller.
      */
     public static int mode(int[][] array, int from, int to, int column) {
-        /// prendre l'array et créer un sous array de from a to ,  puis sort l'array.
+        HashMap<Integer, Integer> occurrence = new HashMap<>();
+        int maxOccurrences = -1;
+        int mostFrequentValue = -1;
+        for (int i = from; i <= to; i++) {
+            if (occurrence.containsKey(array[i][column]))
+                occurrence.put(array[i][column], occurrence.get(array[i][column])+1);
+            else
+                occurrence.put(array[i][column], 1);
+
+            if (occurrence.get(array[i][column]) > maxOccurrences) {
+                maxOccurrences = occurrence.get(array[i][column]);
+                mostFrequentValue = array[i][column];
+            }
+
+            if (occurrence.get(array[i][column]) == maxOccurrences && array[i][column] < mostFrequentValue)
+                mostFrequentValue = array[i][column];
+        }
+        return mostFrequentValue;
+    }
+
+    /*
+            // prendre l'array et créer un sous array de from a to ,  puis sort l'array.
         int[] subArray = new int[to - from + 1];
         for (int i = from ; i < to ; i++){
             subArray[i] = array[i][column];
         }
-        Arrays.stream(subArray).sorted();
+        //Arrays.stream(subArray).sorted();
+        //System.out.println(Arrays.toString(subArray));
+        Arrays.sort(subArray);
+        //System.out.println(Arrays.toString(subArray));
         int maxCount = 0;
         int maxOcc = subArray[0];
         int prev = -1;
@@ -99,7 +123,31 @@ public class Aggregate {
             }
         }
         return maxOcc;
-    }
+     */
+    /*
+            HashMap<Integer, Integer> countMap = new HashMap<>(); // map value, count
+        HashMap<Integer, Integer> firstMap = new HashMap<>();
+        for(int i = from ; i < to ; i++){
+            int current = array[i][column];
+            if (countMap.containsKey(current)){
+                countMap.put(current,countMap.get(current)+1);
+            }
+            else{
+                countMap.put(current,1);
+                firstMap.put(current,i);
+            }
+        }
+        int maxOcc = -1;
+        int maxVal = array[to][column];
+        for (Integer i : countMap.keySet()){
+            int curr = countMap.get(i);
+            if (curr >= maxOcc && firstMap.get(i) < firstMap.get(maxVal)){ //
+                maxOcc = curr;
+                maxVal = i;
+            }
+        }
+        return maxVal;
+     */
 
     /**
      * Aggregates values in a 2D integer array based on the value of a specified column.
@@ -117,25 +165,35 @@ public class Aggregate {
      */
     public static int[][] aggregate(int[][] input, int column) {
         // group rows by their value of intput row,col .
-        int n = input.length;
-        int count = 0;
-        int [][]groups = new int[n][input[0].length];
-        int a = 0;
-        while ( count != n){
-            int occ = mode(input , 0, n-1,column);
-            for(int i = 0; i < n ; i ++){
-                if ( input[i][column] == occ){
-                    for(int j = 0; j < input[0].length ; j ++){
-                        groups[a][j] = (int) (double) input[i][column];
-                    }
-                    input[i][column] = 100047;
-                    count ++;
-                }
+        // Sort the array
+        Arrays.sort(input, Comparator.comparingInt(a -> a[column])); //O(n.log(n))
+
+        // Compute for each group the range of lines to consider
+        int currentGroup = input[0][column];
+        int min = 0;
+        int max = 0;
+        HashMap<Integer, int[]> range = new HashMap<>(); // store the range of each group
+        for (int i = 0; i < input.length; i++) { //O(n)
+            if (currentGroup != input[i][column]) {
+                max = i - 1;
+                range.put(currentGroup, new int[]{min, max});
+                currentGroup = input[i][column];
+                min = i;
             }
-            a ++;
         }
-        System.out.println(Arrays.deepToString(groups));
-        return input;
+        range.put(currentGroup, new int[]{min, input.length - 1});
+
+        // Compute the `mode` for each column of each group
+        int[][] aggregated = new int[range.size()][input[0].length];
+        int rowIndex = 0;
+        for (int valIndex : range.keySet()) { //O(n.m)
+            for (int columnIndex = 0; columnIndex < input[0].length; columnIndex++) {
+                aggregated[rowIndex][columnIndex] = mode(input, range.get(valIndex)[0], range.get(valIndex)[1], columnIndex);
+            }
+            rowIndex++;
+        }
+
+        return aggregated;
     }
 }
 

@@ -1,5 +1,7 @@
 package graphs;
 
+import java.util.*;
+
 /**
  * In case of an emergency at the Olympic games,
  * it’s crucial to ensure that all spectators can be evacuated efficiently.
@@ -32,7 +34,55 @@ public class Evacuation {
      * to reach the nearest exit from the i-th venue. If the i-th venue is an exit, the value is -1.
      */
     public static int[] findShortestPaths(int[][] graph, int[] exits) {
-         return null;
+        System.out.println();
+        System.out.println("Graph : " + Arrays.deepToString(graph));
+        System.out.println("exits : " + Arrays.toString(exits));
+        HashMap<Integer, ArrayList<Integer>> adjMap = new HashMap<>();
+        int n = graph.length;
+        for (int i = 0 ; i < n ; i ++){
+            ArrayList<Integer> edges = new ArrayList<>();
+            for (int j = 0 ; j < n ; j ++){
+                if(graph[i][j]!=0){
+                    edges.add(j);
+                }
+            }
+            adjMap.put(i,edges);
+        }
+        HashMap<Integer, Integer> distMap = new HashMap<>(); // map node , next node
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        int[] distance = new int[n];
+        Arrays.fill(distance,Integer.MAX_VALUE);
+        for (int i : exits){
+            queue.add(i);
+            distMap.put(i,-1);
+            distance[i]=0;
+        }
+        while(!queue.isEmpty()){
+            int u = queue.poll();
+            //System.out.println("u : "+ u);
+            //System.out.println("adj map de "+u + " : " + adjMap.get(u));
+            for (int i : adjMap.get(u)){
+                //System.out.println("curr u : " + u + ", Neigh i : " + i);
+                int newdist = distance[u]+graph[i][u];
+                if (distance[i] > newdist){
+                    distance[i] = newdist;
+                    //System.out.println("neighbor : "  + i);
+                    //System.out.println("u,v : "+u + " , " + i);
+                    distMap.put(i,u); // add i and the distance / the next node u
+                    queue.add(i);
+                }
+            }
+        }
+        //System.out.println("Got out");
+        //System.out.println(distMap.values());
+        System.out.println(distMap.entrySet());
+        int[] ret = new int[distMap.size()];
+        int j = 0;
+        for (int i : distMap.values()){
+            ret[j] = i;
+            j++;
+        }
+        return ret;
     }
 
     public static void main(String[] args) {
